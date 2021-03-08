@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using System;
 
 public class Card : MonoBehaviour
 {
@@ -36,6 +37,13 @@ public class Card : MonoBehaviour
     {
         return _name;
     }
+
+    internal void Clear()
+    {
+        _name = "";
+        _frontImage = _backImage;
+    }
+
     public bool IsFront() 
     { 
         return _isFront;

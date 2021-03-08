@@ -78,7 +78,7 @@ public class DataBase : MonoBehaviour
                 }
             }));
             // because need slow loading progress
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
