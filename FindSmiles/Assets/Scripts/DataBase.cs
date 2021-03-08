@@ -31,12 +31,15 @@ public class DataBase : MonoBehaviour
 
     private string _dbURL = "https://drive.google.com/uc?export=download&id=1K0tx2Tgi-igS_jl3pTPhY6qhk2gFhfvg";
     private Dictionary<string, Sprite> _db = new Dictionary<string, Sprite>();
+    private Dictionary<string, string> _dbJSON = new Dictionary<string, string>();
     public int ImagesCount { get; private set; } = 0;
     public int DownloadImagesCount { get; private set; } = 0;
 
     public Action OnDownloadComplete;
     public Action OnImageDownload;
-    public Dictionary<string, Sprite> GetDataBase() { return _db; }
+
+    private string lastImageName = "";
+
     internal void InitializeManager()
     {
         // Download json
@@ -44,34 +47,40 @@ public class DataBase : MonoBehaviour
         string json = client.DownloadString(_dbURL);
 
         // Parsing json
-        Dictionary<string, string> dbDictionary = new Dictionary<string, string>();
-        dbDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+         _dbJSON = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
         // Download images
-        ImagesCount = dbDictionary.Count;
+        ImagesCount = _dbJSON.Count;
         DownloadImagesCount = 0;
-        foreach (var key in dbDictionary.Keys)
+        StartCoroutine(LoadImages());
+        // tested
+        //OnImageDownload = () => { Debug.Log("image download"); };
+        //OnDownloadComplete = () => { Debug.Log("all files download"); };
+    }
+
+    IEnumerator LoadImages() 
+    {
+        foreach (var key in _dbJSON.Keys)
         {
-            StartCoroutine(GetTextureRequest(dbDictionary[key], (response) =>
+            StartCoroutine(GetTextureRequest(_dbJSON[key], (response) =>
             {
                 if (response != null)
                 {
                     _db[key] = response;
                     DownloadImagesCount++;
+                    lastImageName = key;
                 }
-  
+
                 OnImageDownload?.Invoke();
                 if (DownloadImagesCount == ImagesCount)
                 {
                     OnDownloadComplete?.Invoke();
                 }
             }));
+            // because need slow loading progress
+            yield return new WaitForSeconds(0.5f);
         }
-        // tested
-        //OnImageDownload = () => { Debug.Log("image download"); };
-        //OnDownloadComplete = () => { Debug.Log("all files download"); };
     }
-
 
     IEnumerator GetTextureRequest(string url, System.Action<Sprite> callback)
     {
@@ -94,5 +103,15 @@ public class DataBase : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Dictionary<string, Sprite> GetDataBase()
+    {
+        return _db;
+    }
+
+    public Sprite GetLastImage()
+    {
+        return _db[lastImageName];
     }
 }
