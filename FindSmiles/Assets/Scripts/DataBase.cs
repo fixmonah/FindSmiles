@@ -54,8 +54,12 @@ public class DataBase : MonoBehaviour
         {
             StartCoroutine(GetTextureRequest(dbDictionary[key], (response) =>
             {
-                _db[key] = response;
-                DownloadImagesCount++;
+                if (response != null)
+                {
+                    _db[key] = response;
+                    DownloadImagesCount++;
+                }
+  
                 OnImageDownload?.Invoke();
                 if (DownloadImagesCount == ImagesCount)
                 {
