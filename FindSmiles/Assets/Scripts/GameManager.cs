@@ -3,28 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Text _score;
     [SerializeField] private Card[] _cards;
-    //[SerializeField] private Sprite _front;
 
     private string[] _selectedSpritesName;
+    private GameLogic _gameLogic;
+    private bool _gameIsBlocked;
+    private Player _player;
 
     // Start is called before the first frame update
     void Start()
     {
-        //_card.SetFrontImage(_front);
+        _gameLogic = new GameLogic(this);
+        _player = new Player();
+        StartGame();
+    }
 
+    private void StartGame()
+    {
         // Get random sprites name from DataBase
         _selectedSpritesName = GetRandomSpriteNames();
-        // Set images in cards
+        // Set image in cards
         SetImageInCards(_selectedSpritesName, _cards);
-
-        StartCoroutine(ShowCards());
+        // Show cards at 5 seconds
+        StartCoroutine(ShowCards(5));
     }
-    IEnumerator ShowCards() 
+
+
+    IEnumerator ShowCards(int seconds) 
     {
+        _gameIsBlocked = true;
         yield return new WaitForEndOfFrame();
         //Show Cards
         foreach (var card in _cards)
@@ -32,6 +44,12 @@ public class GameManager : MonoBehaviour
             card.Show();
             card.TurnOverFront();
         }
+        yield return new WaitForSeconds(seconds);
+        foreach (var card in _cards)
+        {
+            card.TurnOverBack();
+        }
+        _gameIsBlocked = false;
     }
 
     /// <summary>
@@ -95,12 +113,57 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+
+    internal void OnClickCard(Card card)
     {
-        //if (Input.GetKeyUp(KeyCode.H)){ _card.Hide(); }
-        //if (Input.GetKeyUp(KeyCode.S)) { _card.Show(); }
-        //if (Input.GetKeyUp(KeyCode.F)) { _card.TurnOverFront(); }
-        //if (Input.GetKeyUp(KeyCode.B)) { _card.TurnOverBack(); }
+        if (!_gameIsBlocked)
+        {
+            _gameLogic.CardInGame(card);
+        }
     }
+
+    internal void CardIsCompare(Card card1, Card card2)
+    {
+        _player.Win();
+        _score.text = _player.Score + "";
+        StartCoroutine(HideCard(card1, card2, 1));
+    }
+
+    IEnumerator HideCard(Card card1, Card card2, int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        card1.Hide();
+        card2.Hide();
+        yield return new WaitForSeconds(2f);
+        RestartGame();
+    }
+
+    private void RestartGame()
+    {
+        bool restartGame = true;
+        foreach (var card in _cards)
+        {
+            if (card.IsActive)
+            {
+                restartGame = false;
+            }
+        }
+        if (restartGame)
+        {
+            StartGame();
+        }
+    }
+
+    internal void CardIsNotCompare(Card card1, Card card2)
+    {
+        StartCoroutine(TurnBackCard(card1, card2, 1));
+    }
+
+    IEnumerator TurnBackCard(Card card1, Card card2, int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        card1.TurnOverBack();
+        card2.TurnOverBack();
+    }
+
 }
