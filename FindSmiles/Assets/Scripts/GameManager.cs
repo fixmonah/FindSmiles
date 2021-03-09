@@ -115,6 +115,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     #region GameLogic
     /// <summary>
     /// Called when the card is clicked

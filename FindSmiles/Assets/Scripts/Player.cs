@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player
 {
-    public int Score { get; public set; }
+    public int Score { get; private set; }
 
     public void Win()
     {
