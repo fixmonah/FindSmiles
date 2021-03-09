@@ -19,7 +19,10 @@ public class Card : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
     }
-
+    /// <summary>
+    /// Set the front picture
+    /// </summary>
+    /// <param name="sprite"></param>
     public void SetFrontImage(Sprite sprite)
     {
         if (sprite != null)
@@ -39,39 +42,57 @@ public class Card : MonoBehaviour
     {
         return _name;
     }
-
-    internal void Clear()
+    /// <summary>
+    /// Clear card data
+    /// </summary>
+    public void Clear()
     {
         _name = "";
         _frontImage = _backImage;
     }
-
+    /// <summary>
+    /// Check if the card is front
+    /// </summary>
+    /// <returns></returns>
     public bool IsFront() 
     { 
         return _isFront;
     }
-
+    /// <summary>
+    /// Show card
+    /// </summary>
     public void Show() 
     {
         _animator.SetBool("Show", true);
         _animator.SetBool("Front", false);
         IsActive = true;
     }
+    /// <summary>
+    /// Hide card
+    /// </summary>
     public void Hide() 
     {
         _animator.SetBool("Show", false);
         IsActive = false;
     }
+    /// <summary>
+    /// Turn the card front is up
+    /// </summary>
     public void TurnOverFront()
     {
         _animator.SetBool("Front", true);
     }
+    /// <summary>
+    /// Turn the card back is up
+    /// </summary>
     public void TurnOverBack()
     {
         _animator.SetBool("Front", false);
     }
 
-
+    /// <summary>
+    /// Mouse click method for UI button
+    /// </summary>
     public void OnMouseClickUI()
     {
         if (IsActive)

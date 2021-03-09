@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 
 public class TopMenu : Editor
 {
-    [MenuItem("Tools/StartLoadingScene")]
+    [MenuItem(" Tools/StartLoadingScene")]
     static void StartInSlowmo()
     {
         EditorSceneManager.OpenScene("Assets/Scenes/LoaderScene.unity");

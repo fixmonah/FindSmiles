@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     private bool _gameIsBlocked;
     private Player _player;
 
-    // Start is called before the first frame update
     void Start()
     {
         _gameLogic = new GameLogic(this);
@@ -23,6 +22,9 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    /// <summary>
+    /// Start or restart game
+    /// </summary>
     private void StartGame()
     {
         // Get random sprites name from DataBase
@@ -77,7 +79,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Set card settings. Name and Card
+    /// Set card settings. Name and image
     /// </summary>
     /// <param name="selectedSpritesName">images names</param>
     /// <param name="cards">cards objects</param>
@@ -113,16 +115,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    internal void OnClickCard(Card card)
+    #region GameLogic
+    /// <summary>
+    /// Called when the card is clicked
+    /// </summary>
+    /// <param name="card">link to the clicked card</param>
+    public void OnClickCard(Card card)
     {
         if (!_gameIsBlocked)
         {
             _gameLogic.CardInGame(card);
         }
     }
-
-    internal void CardIsCompare(Card card1, Card card2)
+    /// <summary>
+    /// Called by game logic if the cards are the same
+    /// </summary>
+    /// <param name="card1"></param>
+    /// <param name="card2"></param>
+    public void CardIsCompare(Card card1, Card card2)
     {
         _player.Win();
         _score.text = _player.Score + "";
@@ -137,7 +147,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         RestartGame();
     }
-
+    /// <summary>
+    /// Game restart logic
+    /// </summary>
     private void RestartGame()
     {
         bool restartGame = true;
@@ -153,8 +165,12 @@ public class GameManager : MonoBehaviour
             StartGame();
         }
     }
-
-    internal void CardIsNotCompare(Card card1, Card card2)
+    /// <summary>
+    /// Called by game logic if the cards don't match
+    /// </summary>
+    /// <param name="card1"></param>
+    /// <param name="card2"></param>
+    public void CardIsNotCompare(Card card1, Card card2)
     {
         StartCoroutine(TurnBackCard(card1, card2, 1));
     }
@@ -165,5 +181,5 @@ public class GameManager : MonoBehaviour
         card1.TurnOverBack();
         card2.TurnOverBack();
     }
-
+    #endregion
 }

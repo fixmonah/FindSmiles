@@ -14,8 +14,11 @@ public class GameLogic
     {
         _gameManager = gameManager;
     }
-
-    internal void CardInGame(Card card)
+    /// <summary>
+    /// Start of game logic
+    /// </summary>
+    /// <param name="card"></param>
+    public void CardInGame(Card card)
     {
         if (_resetCard)
         {
@@ -39,9 +42,15 @@ public class GameLogic
         {
             _card2 = card;
         }
-        CompareCard(_card1, _card2);
+        CheckCards(_card1, _card2);
     }
-
+    /// <summary>
+    /// Check Card for duplicates
+    /// </summary>
+    /// <param name="card">target</param>
+    /// <param name="card1">verifiable</param>
+    /// <param name="card2">verifiable</param>
+    /// <returns></returns>
     private bool CheckForDuplicate(Card card, Card card1, Card card2)
     {
         bool answer = false;
@@ -56,7 +65,7 @@ public class GameLogic
         return answer;
     }
 
-    private void CompareCard(Card card1, Card card2)
+    private void CheckCards(Card card1, Card card2)
     {
         if (_card1 == null || _card2 == null)
         {

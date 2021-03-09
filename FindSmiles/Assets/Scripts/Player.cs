@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Player
 {
-    public int Score { get; internal set; }
+    public int Score { get; public set; }
 
-    internal void Win()
+    public void Win()
     {
         Score++;
     }

@@ -32,30 +32,34 @@ public class DataBase : MonoBehaviour
     private string _dbURL = "https://drive.google.com/uc?export=download&id=1K0tx2Tgi-igS_jl3pTPhY6qhk2gFhfvg";
     private Dictionary<string, Sprite> _db = new Dictionary<string, Sprite>();
     private Dictionary<string, string> _dbJSON = new Dictionary<string, string>();
+   
     public int ImagesCount { get; private set; } = 0;
     public int DownloadImagesCount { get; private set; } = 0;
-
     public Action OnDownloadComplete;
     public Action OnImageDownload;
 
     private string lastImageName = "";
+    
+    public Dictionary<string, Sprite> GetDataBase()
+    {
+        return _db;
+    }
+    public Sprite GetLastImage()
+    {
+        return _db[lastImageName];
+    }
 
-    internal void InitializeManager()
+    public void InitializeManager()
     {
         // Download json
         WebClient client = new WebClient();
         string json = client.DownloadString(_dbURL);
-
         // Parsing json
          _dbJSON = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
         // Download images
         ImagesCount = _dbJSON.Count;
         DownloadImagesCount = 0;
         StartCoroutine(LoadImages());
-        // tested
-        //OnImageDownload = () => { Debug.Log("image download"); };
-        //OnDownloadComplete = () => { Debug.Log("all files download"); };
     }
 
     IEnumerator LoadImages() 
@@ -103,15 +107,5 @@ public class DataBase : MonoBehaviour
                 }
             }
         }
-    }
-
-    public Dictionary<string, Sprite> GetDataBase()
-    {
-        return _db;
-    }
-
-    public Sprite GetLastImage()
-    {
-        return _db[lastImageName];
     }
 }
